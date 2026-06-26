@@ -32,7 +32,7 @@ server/dist/
 # Playwright test artifacts
 .playwright-mcp/
 
-# Screenshot artifacts from development
-*.png
-*.jpg
-*.jpeg
+# Screenshot artifacts from development (root-level only; docs/ screenshots are intentional)
+/*.png
+/*.jpg
+/*.jpeg
