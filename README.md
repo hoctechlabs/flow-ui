@@ -40,23 +40,9 @@ chmod +x flow-ui
 ./flow-ui
 ```
 
-### Linux (amd64)
-```bash
-curl -L https://github.com/hoctechlabs/flow-ui/releases/latest/download/flow-ui-linux-amd64 -o flow-ui
-chmod +x flow-ui
-./flow-ui
-```
-
-### Linux (arm64)
-```bash
-curl -L https://github.com/hoctechlabs/flow-ui/releases/latest/download/flow-ui-linux-arm64 -o flow-ui
-chmod +x flow-ui
-./flow-ui
-```
-
 Then open [http://localhost:8765](http://localhost:8765) in your browser.
 
-**Requires:** [flow CLI](https://github.com/Facets-cloud/flow) installed and initialised (`flow init`).
+**Requires:** [flow CLI](https://github.com/Facets-cloud/flow) installed and initialised (`flow init`). flow is macOS-only.
 
 ---
 
@@ -104,12 +90,9 @@ That's it. The workflow does the rest.
      The dev build (go run) uses embed_dev.go instead — a no-op stub
      that skips the embed, so no dist/ directory is needed locally.
 
-3. Cross-compile for 5 platforms
+3. Compile for macOS (matches the platforms flow CLI supports)
    darwin/arm64   → flow-ui-darwin-arm64
    darwin/amd64   → flow-ui-darwin-amd64
-   linux/amd64    → flow-ui-linux-amd64
-   linux/arm64    → flow-ui-linux-arm64
-   windows/amd64  → flow-ui-windows-amd64.exe
 
 4. Create GitHub release
    Attaches all 5 binaries.
@@ -172,6 +155,10 @@ Frontend and API share the same origin (port 8765), so no CORS is needed in prod
 flow-ui has **no authentication**. It is designed for local-only use and should not be exposed on a public network. The server reads from your `~/.flow` directory which may contain personal and organisation-sensitive information.
 
 ---
+
+## Contributing
+
+Bug reports, feature requests, and PRs are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 

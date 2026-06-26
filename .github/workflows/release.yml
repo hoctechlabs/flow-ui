@@ -40,12 +40,10 @@ jobs:
           cd server
           VERSION="${{ github.ref_name }}"
 
+          # flow CLI is macOS-only; match the same platforms it supports
           declare -A TARGETS=(
             ["darwin-arm64"]="darwin/arm64"
             ["darwin-amd64"]="darwin/amd64"
-            ["linux-amd64"]="linux/amd64"
-            ["linux-arm64"]="linux/arm64"
-            ["windows-amd64"]="windows/amd64"
           )
 
           mkdir -p ../release
@@ -55,9 +53,6 @@ jobs:
             GOOS="${PLATFORM%/*}"
             GOARCH="${PLATFORM#*/}"
             OUTPUT="../release/flow-ui-${NAME}"
-            if [ "$GOOS" = "windows" ]; then
-              OUTPUT="${OUTPUT}.exe"
-            fi
             echo "Building $NAME ($GOOS/$GOARCH)..."
             GOOS=$GOOS GOARCH=$GOARCH CGO_ENABLED=0 go build -tags release -ldflags="-s -w -X main.version=${VERSION}" -o "$OUTPUT" .
           done
@@ -86,13 +81,6 @@ jobs:
             ./flow-ui
             ```
 
-            ### Linux (amd64)
-            ```bash
-            curl -L https://github.com/hoctechlabs/flow-ui/releases/download/${{ github.ref_name }}/flow-ui-linux-amd64 -o flow-ui
-            chmod +x flow-ui
-            ./flow-ui
-            ```
-
             Then open [http://localhost:8765](http://localhost:8765) in your browser.
 
-            **Requires:** [flow CLI](https://github.com/Facets-cloud/flow) installed and initialised.
+            **Requires:** [flow CLI](https://github.com/Facets-cloud/flow) installed and initialised. flow is macOS-only.
