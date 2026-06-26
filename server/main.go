@@ -28,9 +28,15 @@ func main() {
 	mux.HandleFunc("/api/activity", handleActivity)
 	mux.HandleFunc("/api/throughput", handleThroughput)
 
+	// registerFrontend is defined in either embed_release.go or embed_dev.go
+	// depending on the build tag.
+	registerFrontend(mux)
+
+	// In dev mode CORS is needed because Vite runs on a separate port.
+	// In release mode the frontend is served from the same origin.
 	handler := corsMiddleware(mux)
 
-	fmt.Printf("flow-ui server running on http://localhost:%s\n", port)
+	fmt.Printf("flow-ui running on http://localhost:%s\n", port)
 	if err := http.ListenAndServe(":"+port, handler); err != nil {
 		fmt.Fprintf(os.Stderr, "server error: %v\n", err)
 		os.Exit(1)

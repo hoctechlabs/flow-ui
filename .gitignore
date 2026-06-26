@@ -26,6 +26,9 @@ dist-ssr
 # Go server binary
 server/flow-ui-server
 
+# Release build output (frontend built into server/dist/ by CI, not committed)
+server/dist/
+
 # Playwright test artifacts
 .playwright-mcp/
 

@@ -1,0 +1,98 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache-dependency-path: server/go.sum
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build frontend into server/dist
+        run: npm run build -- --outDir server/dist
+
+      - name: Cross-compile binaries
+        run: |
+          cd server
+          VERSION="${{ github.ref_name }}"
+
+          declare -A TARGETS=(
+            ["darwin-arm64"]="darwin/arm64"
+            ["darwin-amd64"]="darwin/amd64"
+            ["linux-amd64"]="linux/amd64"
+            ["linux-arm64"]="linux/arm64"
+            ["windows-amd64"]="windows/amd64"
+          )
+
+          mkdir -p ../release
+
+          for NAME in "${!TARGETS[@]}"; do
+            PLATFORM="${TARGETS[$NAME]}"
+            GOOS="${PLATFORM%/*}"
+            GOARCH="${PLATFORM#*/}"
+            OUTPUT="../release/flow-ui-${NAME}"
+            if [ "$GOOS" = "windows" ]; then
+              OUTPUT="${OUTPUT}.exe"
+            fi
+            echo "Building $NAME ($GOOS/$GOARCH)..."
+            GOOS=$GOOS GOARCH=$GOARCH CGO_ENABLED=0 go build -tags release -ldflags="-s -w -X main.version=${VERSION}" -o "$OUTPUT" .
+          done
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          generate_release_notes: true
+          body: |
+            ## Install
+
+            Download the binary for your platform, make it executable, and run it.
+
+            ### macOS (Apple Silicon)
+            ```bash
+            curl -L https://github.com/hoctechlabs/flow-ui/releases/download/${{ github.ref_name }}/flow-ui-darwin-arm64 -o flow-ui
+            chmod +x flow-ui
+            ./flow-ui
+            ```
+
+            ### macOS (Intel)
+            ```bash
+            curl -L https://github.com/hoctechlabs/flow-ui/releases/download/${{ github.ref_name }}/flow-ui-darwin-amd64 -o flow-ui
+            chmod +x flow-ui
+            ./flow-ui
+            ```
+
+            ### Linux (amd64)
+            ```bash
+            curl -L https://github.com/hoctechlabs/flow-ui/releases/download/${{ github.ref_name }}/flow-ui-linux-amd64 -o flow-ui
+            chmod +x flow-ui
+            ./flow-ui
+            ```
+
+            Then open [http://localhost:8765](http://localhost:8765) in your browser.
+
+            **Requires:** [flow CLI](https://github.com/Facets-cloud/flow) installed and initialised.

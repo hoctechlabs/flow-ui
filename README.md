@@ -10,13 +10,40 @@ flow is a personal task and session manager for developers. flow-ui gives it a v
 - **Tasks** — kanban board (Backlog / In Progress / Done) with priority, stale, and waiting-on badges; click any card for a detail drawer with brief and update history
 - **Knowledge Base** — renders your flow KB files (user, org, products, processes, business)
 
-## Prerequisites
+## Install (release binary — recommended)
 
-- [flow CLI](https://github.com/Facets-cloud/flow) installed and initialised (`flow init`)
-- Go 1.21+
-- Node.js 18+
+Download the binary for your platform from the [latest release](https://github.com/hoctechlabs/flow-ui/releases/latest), make it executable, and run it. No Node or Go required.
 
-## Running
+```bash
+# macOS Apple Silicon
+curl -L https://github.com/hoctechlabs/flow-ui/releases/latest/download/flow-ui-darwin-arm64 -o flow-ui
+chmod +x flow-ui
+./flow-ui
+```
+
+```bash
+# macOS Intel
+curl -L https://github.com/hoctechlabs/flow-ui/releases/latest/download/flow-ui-darwin-amd64 -o flow-ui
+chmod +x flow-ui
+./flow-ui
+```
+
+```bash
+# Linux amd64
+curl -L https://github.com/hoctechlabs/flow-ui/releases/latest/download/flow-ui-linux-amd64 -o flow-ui
+chmod +x flow-ui
+./flow-ui
+```
+
+Then open [http://localhost:8765](http://localhost:8765).
+
+**Requires:** [flow CLI](https://github.com/Facets-cloud/flow) installed and initialised (`flow init`).
+
+---
+
+## Running from source
+
+**Prerequisites:** Go 1.21+, Node.js 18+, flow CLI
 
 ```bash
 # Install frontend dependencies (first time only)
